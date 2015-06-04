@@ -42,6 +42,7 @@ public class Banque extends Thread {
 			
 			try { 
 				clientSocket = serverSocket.accept();
+				System.out.println ("client connecte");	
 			} 
 			catch (IOException e) { 
 				System.err.println("Accept de " + port + " a echouer."); 
