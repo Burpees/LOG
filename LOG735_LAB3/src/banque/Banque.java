@@ -39,17 +39,14 @@ public class Banque extends Thread {
 		while(true) {
 			Socket clientSocket = null; 
 			System.out.println ("Le serveur " + port + " est en marche, Attente de la connexion.....");
-
 			
 			try { 
 				clientSocket = serverSocket.accept();
 			} 
-			catch (IOException e) 
-		    { 
+			catch (IOException e) { 
 				System.err.println("Accept de " + port + " a echouer."); 
 				System.exit(1); 
-		    } 
-			
+		    } 			
 			
 //			//event but for client id
 //			// EXIGENCE BANQUE - 01 et BANQUE - 06 (unique ID)
