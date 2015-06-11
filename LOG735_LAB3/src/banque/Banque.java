@@ -5,13 +5,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+
 import succursales.Succursale;
+import succursales.SuccursaleInfo;
 
 public class Banque{
 
 	private int montantTotal = 0;
 	private int port;
-	private List<String> listSuccursale;
+	private List<SuccursaleInfo> listSuccursale;
 	private ServerSocket serverSocket;
 	private static Banque banque;
 	private int succursaleId = 0;
@@ -24,7 +26,7 @@ public class Banque{
 	
 	public Banque(int port) throws IOException {		
 		this.port = port;
-		listSuccursale = new ArrayList<String>();
+		listSuccursale = new ArrayList<SuccursaleInfo>();
 	}
 	
 	public void openConnection(){
@@ -64,7 +66,7 @@ public class Banque{
 		}
 	}
 	
-	public void addSurccusale(String succ) {
+	public void addSurccusale(SuccursaleInfo succ) {
 		listSuccursale.add(succ);
     }
 		

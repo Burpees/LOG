@@ -18,8 +18,8 @@ public class Succursale extends Thread{
 	private int id;
 	private static Succursale succursale;
 	public String name;
-	private PrintWriter out;
-	private BufferedReader in;
+	private ObjectOutputStream outputStream;
+	private ObjectInputStream inputStream;
 	
 	public static void main(String[] args) throws IOException {
 		System.out.println("EL SUCCURSALO");
@@ -46,8 +46,9 @@ public class Succursale extends Thread{
 		
 		try {
             echoSocket = new Socket("127.0.0.1", 11657);
-            out = new PrintWriter(echoSocket.getOutputStream());
-            in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
+            
+            outputStream = new ObjectOutputStream(echoSocket.getOutputStream());
+            inputStream = new ObjectInputStream(echoSocket.getInputStream());
         } catch (UnknownHostException e) {
             System.err.println("Hôte inconnu: " + "127.0.0.1");
             System.exit(1);
@@ -57,12 +58,18 @@ public class Succursale extends Thread{
         }
 		 
         try {
-        	int id = Integer.parseInt(in.readLine());
-        	succursale.id = id;
-        	String infoSucc = port + "-" + id + "-" + montant + "-" + "127.0.0.1";
-        	out.write(infoSucc);
-		} catch (IOException e1) {
-			e1.printStackTrace();
+        	
+//        	int id = (Integer)inputStream.readObject();        	
+//        	succursale.id = id;
+        	
+//        	String infoSucc = port + "-" + id + "-" + montant + "-" + "127.0.0.1";
+        	
+        	SuccursaleInfo succInfo = new SuccursaleInfo();
+        	//Thread.sleep(5000);
+        	outputStream.writeObject(succInfo);
+        	
+		} catch (Exception e) {
+			e.printStackTrace();
 		}   
         
         /*try {

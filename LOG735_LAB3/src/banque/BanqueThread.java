@@ -2,13 +2,16 @@ package banque;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+
 import succursales.Succursale;
+import succursales.SuccursaleInfo;
 
 public class BanqueThread extends Thread{
 	private int port;
@@ -16,8 +19,8 @@ public class BanqueThread extends Thread{
 	private Socket clientSocket;
 	private Banque banque;
 	private int succursaleUniqueID = 0;
-	private PrintWriter out;
-	private BufferedReader in;
+	private ObjectOutputStream outputStream;
+	private ObjectInputStream inputStream;
 	
 	public BanqueThread(Socket clientSocket, Banque banque){
 		this.clientSocket = clientSocket;
@@ -26,26 +29,30 @@ public class BanqueThread extends Thread{
 	
 	public void run() {			
 		try {
-			out = new PrintWriter(clientSocket.getOutputStream());
-			in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+			inputStream = new ObjectInputStream(clientSocket.getInputStream());
+			outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
-	
-		Succursale succursale;
 		
 		try {
-			out.write(banque.getSuccursaleId());
-			String infoSucc = in.readLine();
-			String[] Infos = infoSucc.split("-");
-			banque.addSurccusale(infoSucc);
-			int montantSuccursale = Integer.parseInt(Infos[2]);
-			banque.addTotal(montantSuccursale);
-			System.out.println ("Succursale: " + montantSuccursale);
-			System.out.println ("Banque: " + banque.getTotal());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
+			//outputStream.writeObject(banque.getSuccursaleId());
+			SuccursaleInfo infoSucc;
+
+			while((infoSucc = (SuccursaleInfo)inputStream.readObject()) != null){
+			
+				//String[] Infos = infoSucc.split("-");
+				banque.addSurccusale(infoSucc);
+	//			int montantSuccursale = Integer.parseInt(Infos[2]);
+	//			banque.addTotal(montantSuccursale);
+	//			System.out.println ("Succursale: " + montantSuccursale);
+	//			System.out.println ("Banque: " + banque.getTotal());
+				System.out.println( "AJoute avec succes");
+				
+			}
+			
+		} catch (Exception e) {
 			e.printStackTrace();
 		} 	
 		 
