@@ -3,58 +3,50 @@ package succursales;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class Succursale extends Thread {
+public class Succursale extends Thread{
 
-	private int total;
+	private int montant;
 	private int port;
-	private ServerSocket serverSocket;
+	private int id;
+	private static Succursale succursale;
+	public String name;
+	private PrintWriter out;
+	private BufferedReader in;
+	
+	public static void main(String[] args) throws IOException {
+		System.out.println("EL SUCCURSALO");
+		succursale = new Succursale((int)(Math.random() * 8000) + 2000);		
+		succursale.name = "name1";
+		succursale.start();
+	}
 	
 	public Succursale(int montantInitial) throws IOException {
 		
 		System.out.println( "solde : " + montantInitial );
 		
-//		listSuccursale = new ArrayList<TunnelSuccursale>();
-		
-		this.setTotal(montantInitial);
+		this.setMontant(montantInitial);
 
 		this.port = (int) (5000 + (Math.random() * 5000));
 		
 		String banqueIP = "127.0.0.1";
 		int BanquePort = 11657;
 		Socket s = new Socket(banqueIP, BanquePort);
-	}
-	
-	public static void main(String[] args) throws IOException {
-		System.out.println("EL SUCCURSALO");
-		Succursale succursale = new Succursale((int)(Math.random() * 8000) + 2000);		
-	
-		succursale.start();
-	}
+	}	
 	
 	public void run() {
 		Socket echoSocket = null;
-        PrintWriter out = null;
-        BufferedReader in = null;
-        
-		try { 
-			serverSocket = new ServerSocket(port); 
-        }
-		
-		catch (IOException e) { 
-			System.err.println("On ne peut pas écouter au port: " + Integer.toString(port) + "."); 
-			System.exit(1); 
-        }
-		
-		System.out.println ("Le serveur est en marche, écoute au port " + port + ", Attente de la connexion.....");
 		
 		try {
             echoSocket = new Socket("127.0.0.1", 11657);
-            out = new PrintWriter(echoSocket.getOutputStream(), true);
+            out = new PrintWriter(echoSocket.getOutputStream());
             in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
         } catch (UnknownHostException e) {
             System.err.println("Hôte inconnu: " + "127.0.0.1");
@@ -63,65 +55,33 @@ public class Succursale extends Thread {
             System.err.println("Ne pas se connecter au serveur: " + "127.0.0.1");
             System.exit(1);
         }
-		
-		 BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-	        String userInput;
-	        System.out.print ("Entrée: ");
-	        try {
-				while ((userInput = stdIn.readLine()) != null) {
-					out.println(userInput);
-					System.out.println("echo: " + in.readLine());
-				    System.out.print ("Entrée: ");
-				}
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-
-	        out.close();
-	        try {
-				in.close();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-	        try {
-				stdIn.close();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-	        try {
-				echoSocket.close();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-	        
-		while(true) {
-			Socket clientSocket = null; 
-			
-			try { 
-				clientSocket = serverSocket.accept(); 
-				System.out.println("Connexion réussie, port : " + clientSocket.getPort());
-			} 
-			catch (IOException e) { 
-				System.err.println("Connexion échouée, port : " + clientSocket.getPort()); 
-				System.exit(1); 
-		    } 
-		}
-	
+		 
+        try {
+        	int id = Integer.parseInt(in.readLine());
+        	succursale.id = id;
+        	String infoSucc = port + "-" + id + "-" + montant + "-" + "127.0.0.1";
+        	out.write(infoSucc);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}   
+        
+        /*try {
+			objOutStream.close();
+			objInStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 	*/
 	}
 	
-	public void setTotal(int total) {
-		this.total = total;
+	public void setMontant(int total) {
+		this.montant = montant;
 	}
 
-	public int getTotal() {
-		return total;
+	public int getMontant() {
+		return montant;
 	}
 	
 	public void ajouterArgent(int montant, int succid) {
-		this.total += montant;
+		this.montant += montant;
 	}
 }

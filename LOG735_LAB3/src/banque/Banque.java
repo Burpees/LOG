@@ -5,60 +5,66 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-
 import succursales.Succursale;
 
-public class Banque extends Thread {
+public class Banque{
 
 	private int montantTotal = 0;
 	private int port;
-	private List<Succursale> listSuccursale;
+	private List<String> listSuccursale;
 	private ServerSocket serverSocket;
+	private static Banque banque;
+	private int succursaleId = 0;
 	
 	public static void main(String[] args) throws IOException {
 		System.out.println("EL BANKO");
-		Banque banque = new Banque(11657);
-		banque.start();
+		banque = new Banque(11657);
+		banque.openConnection();		
 	}
 	
 	public Banque(int port) throws IOException {		
 		this.port = port;
-		listSuccursale = new ArrayList<Succursale>();
+		listSuccursale = new ArrayList<String>();
 	}
 	
-	public void run() {
-		
+	public void openConnection(){
+		boolean isStopped = false;
+		ServerSocket serverSocket = null; 
+
 		try { 
-			serverSocket = new ServerSocket(port); 
+			serverSocket = new ServerSocket(11657); 
         } 
-		catch (IOException e) { 
-			System.err.println("On ne peut pas ecouter au  port: " + Integer.toString(port) + "."); 
-			System.exit(1); 
-        }
 		
-		while(true) {
-			Socket clientSocket = null; 
-			System.out.println ("Le serveur " + port + " est en marche, Attente de la connexion.....");
-			
+		catch (IOException e) 
+        { 
+			System.err.println("On ne peut pas écouter au  port: 10118."); 
+			System.exit(1);
+			isStopped = true;
+        } 
+
+		System.out.println ("Le serveur est en marche, Attente de la connexion.....");
+		Socket clientSocket = null;
+		
+		while (!isStopped)
+		{
 			try { 
-				clientSocket = serverSocket.accept();
-				System.out.println ("client connecte");	
-			} 
-			catch (IOException e) { 
-				System.err.println("Accept de " + port + " a echouer."); 
+				clientSocket = serverSocket.accept(); 
+		    } 
+			catch (IOException e) 
+		    { 
+				System.err.println("Accept a échoué."); 
 				System.exit(1); 
-		    } 			
-			
-//			//event but for client id
-//			// EXIGENCE BANQUE - 01 et BANQUE - 06 (unique ID)
-//			CommunicatorBanque communicator = new CommunicatorBanque(clientSocket, banque, getSuccursaleUniqueID());
-//			communicator.start();
-//			addSurccusale(communicator);
-		}
+		    } 
 		
+			System.out.println ("connexion réussie");
+			
+			new Thread(
+		            new BanqueThread(clientSocket, banque)
+		            ).start(); 
+		}
 	}
 	
-	public void addSurccusale(Succursale succ) {
+	public void addSurccusale(String succ) {
 		listSuccursale.add(succ);
     }
 		
@@ -74,4 +80,7 @@ public class Banque extends Thread {
 		return montantTotal;
 	}
 	
+	public int getSuccursaleId(){
+		return succursaleId++;
+	}
 }
