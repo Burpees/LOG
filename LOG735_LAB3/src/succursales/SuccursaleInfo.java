@@ -8,13 +8,12 @@ public class SuccursaleInfo implements Serializable {
 	private int port;
 	private int montant;
 	private int id;
-	private Socket socket;	
+	//private Socket socket;	
 
 	public SuccursaleInfo (int port, int montant, int id) {
 		this.port = port;
 		this.montant = montant;
-		this.id = id;
-		
+		this.id = id;		
 	}
 	
 	public int getPort() {
@@ -41,11 +40,16 @@ public class SuccursaleInfo implements Serializable {
 		this.id = id;
 	}	
 	
-	public Socket getSocket() {
-		return socket;
+	@Override
+	public String toString() {
+		return "Succursale #" + getId();
 	}
-
-	public void setSocket(Socket socket) {
-		this.socket = socket;
-	}
+	
+//	public Socket getSocket() {
+//		return socket;
+//	}
+//
+//	public void setSocket(Socket socket) {
+//		this.socket = socket;
+//	}
 }

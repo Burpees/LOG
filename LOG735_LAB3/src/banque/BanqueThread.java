@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import succursales.Succursale;
@@ -25,23 +26,24 @@ public class BanqueThread extends Thread{
 	public BanqueThread(Socket clientSocket, Banque banque){
 		this.clientSocket = clientSocket;
 		this.banque = banque;
-	}
-	
-	public void run() {			
 		try {
 			inputStream = new ObjectInputStream(clientSocket.getInputStream());
 			outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
 		} catch (IOException e) {
 			e.printStackTrace();
-		}		
-		
+		}	
+	}
+	
+	public void run() {	
 		try {
 			
 			//outputStream.writeObject(banque.getSuccursaleId());
+			
 			SuccursaleInfo infoSucc;
 			outputStream.writeObject(banque.generateSuccursaleId());
 			infoSucc = (SuccursaleInfo)inputStream.readObject();
-			infoSucc.setSocket(clientSocket);
+			
+			//infoSucc.setSocket(clientSocket);
 			
 			//for (Iterator<SuccursaleInfo> i = banque.listSuccursale.iterator(); i.hasNext();)
 			//{
@@ -49,34 +51,31 @@ public class BanqueThread extends Thread{
 			//}			
 				//String[] Infos = infoSucc.split("-");
 				banque.addSurccusale(infoSucc);
-				outputStream.writeObject(banque.listSuccursale);
-				//outputStream.writeObject(banque.listSuccursale);
-	//			int montantSuccursale = Integer.parseInt(Infos[2]);
-	//			banque.addTotal(montantSuccursale);
-	//			System.out.println ("Succursale: " + montantSuccursale);
-	//			System.out.println ("Banque: " + banque.getTotal());
-				System.out.println( "AJoute avec succes");
-				System.out.println(infoSucc.getMontant());
-				System.out.println(infoSucc.getId());
+				banque.addTotal(infoSucc.getMontant());
+
+				System.out.println(infoSucc.toString());
+				System.out.println( "Montant de la nouvelle succursale: " + infoSucc.getMontant() + "$" );
+				System.out.println( "Montant total de la banque: " + banque.getTotal() + "$" );
 				
-			
-			
+							
 		} catch (Exception e) {
 			e.printStackTrace();
 		} 	
 		 
-		try {
-			inputStream.close();
-			outputStream.close();
-			clientSocket.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+//		try {
+//			inputStream.close();
+//			outputStream.close();
+//			clientSocket.close();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} 
 		
     }
 	
-	public void updateListSuccursale()
-	{}
+	public void updateListSuccursale(ArrayList<SuccursaleInfo> listSuccInfo) throws IOException
+	{
+		outputStream.writeObject(listSuccInfo);
+	}
 	
 }

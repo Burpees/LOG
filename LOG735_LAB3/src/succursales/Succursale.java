@@ -60,25 +60,30 @@ public class Succursale extends Thread{
         	id = (Integer)inputStream.readObject();
         	SuccursaleInfo succInfo = new SuccursaleInfo(port, montant, id);
         	outputStream.writeObject(succInfo);
-        	listSuccursale = (ArrayList<SuccursaleInfo>)inputStream.readObject();
-        	/*while (true)
+        	//listSuccursale = (ArrayList<SuccursaleInfo>)inputStream.readObject();
+         	
+        	Object o;
+        	while ((o = inputStream.readObject()) != null)
         	{
-        		Object o = inputStream.readObject();
         		if (o instanceof List<?>)
         		{
         			listSuccursale = (ArrayList<SuccursaleInfo>)o;
+        			
+        			for (int i = 0; i < listSuccursale.size(); i ++ ) {
+        				System.out.println(listSuccursale.get(i).getId());
+        			}
         		}
-        	}*/
+        	}
         	
 		} catch (Exception e) {
 			e.printStackTrace();
 		}   
         
         try {
-        	outputStream.close();
-        	inputStream.close();
-        	echoSocket.close();
-		} catch (IOException e) {
+        	//outputStream.close();
+        	//inputStream.close();
+        	//echoSocket.close();
+		} catch (Exception e) {
 			e.printStackTrace();
 		} 	
 	}

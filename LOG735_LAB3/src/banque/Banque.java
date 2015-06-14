@@ -17,7 +17,7 @@ public class Banque{
 	private ArrayList<BanqueThread> listBanqueThread;
 	private ServerSocket serverSocket;
 	private static Banque banque;
-	private int succursaleId = 0;
+	private int succursaleId = 1;
 	
 	public static void main(String[] args) throws IOException {
 		System.out.println("EL BANKO");
@@ -28,9 +28,10 @@ public class Banque{
 	public Banque(int port) throws IOException {		
 		this.port = port;
 		listSuccursale = new ArrayList<SuccursaleInfo>();
+		listBanqueThread = new ArrayList<BanqueThread>();
 	}
 	
-	public void openConnection(){
+	public void openConnection() throws IOException{
 		boolean isStopped = false;
 		ServerSocket serverSocket = null; 
 
@@ -58,13 +59,13 @@ public class Banque{
 				System.err.println("Accept a échoué."); 
 				System.exit(1); 
 		    } 
-		
-			System.out.println ("connexion réussie");
 			
 			BanqueThread banqueThread = new BanqueThread(clientSocket, banque);
 			banqueThread.start();
 			listBanqueThread.add(banqueThread);
-			
+			for ( int i = 0; i < listBanqueThread.size(); i ++ ) {
+				listBanqueThread.get(i).updateListSuccursale(listSuccursale);
+			}
 		}
 	}
 	
