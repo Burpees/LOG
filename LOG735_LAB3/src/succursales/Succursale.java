@@ -1,15 +1,12 @@
 package succursales;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
-import java.io.Serializable;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Succursale extends Thread{
 
@@ -20,6 +17,7 @@ public class Succursale extends Thread{
 	public String name;
 	private ObjectOutputStream outputStream;
 	private ObjectInputStream inputStream;
+	public ArrayList<SuccursaleInfo> listSuccursale;
 	
 	public static void main(String[] args) throws IOException {
 		System.out.println("EL SUCCURSALO");
@@ -59,10 +57,18 @@ public class Succursale extends Thread{
 //        	succursale.id = id;
         	
 //        	String infoSucc = port + "-" + id + "-" + montant + "-" + "127.0.0.1";
-        	
-        	SuccursaleInfo succInfo = new SuccursaleInfo();
-        	//Thread.sleep(5000);
+        	id = (Integer)inputStream.readObject();
+        	SuccursaleInfo succInfo = new SuccursaleInfo(port, montant, id);
         	outputStream.writeObject(succInfo);
+        	listSuccursale = (ArrayList<SuccursaleInfo>)inputStream.readObject();
+        	/*while (true)
+        	{
+        		Object o = inputStream.readObject();
+        		if (o instanceof List<?>)
+        		{
+        			listSuccursale = (ArrayList<SuccursaleInfo>)o;
+        		}
+        	}*/
         	
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -77,7 +83,7 @@ public class Succursale extends Thread{
 		} 	
 	}
 	
-	public void setMontant(int total) {
+	public void setMontant(int montant) {
 		this.montant = montant;
 	}
 

@@ -13,7 +13,8 @@ public class Banque{
 
 	private int montantTotal = 0;
 	private int port;
-	private List<SuccursaleInfo> listSuccursale;
+	public ArrayList<SuccursaleInfo> listSuccursale;
+	private ArrayList<BanqueThread> listBanqueThread;
 	private ServerSocket serverSocket;
 	private static Banque banque;
 	private int succursaleId = 0;
@@ -60,9 +61,10 @@ public class Banque{
 		
 			System.out.println ("connexion réussie");
 			
-			new Thread(
-		            new BanqueThread(clientSocket, banque)
-		            ).start(); 
+			BanqueThread banqueThread = new BanqueThread(clientSocket, banque);
+			banqueThread.start();
+			listBanqueThread.add(banqueThread);
+			
 		}
 	}
 	
@@ -82,7 +84,7 @@ public class Banque{
 		return montantTotal;
 	}
 	
-	public int getSuccursaleId(){
-		return succursaleId++;
+	public int generateSuccursaleId(){
+		return succursaleId ++;
 	}
 }
