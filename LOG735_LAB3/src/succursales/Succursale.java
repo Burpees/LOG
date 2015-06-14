@@ -35,17 +35,13 @@ public class Succursale extends Thread{
 		this.setMontant(montantInitial);
 
 		this.port = (int) (5000 + (Math.random() * 5000));
-		
-		String banqueIP = "127.0.0.1";
-		int BanquePort = 11657;
-		Socket s = new Socket(banqueIP, BanquePort);
 	}	
 	
 	public void run() {
 		Socket echoSocket = null;
 		
 		try {
-            echoSocket = new Socket("127.0.0.1", 11657);
+            echoSocket = new Socket("127.0.0.1", 2002);
             
             outputStream = new ObjectOutputStream(echoSocket.getOutputStream());
             inputStream = new ObjectInputStream(echoSocket.getInputStream());
@@ -72,12 +68,13 @@ public class Succursale extends Thread{
 			e.printStackTrace();
 		}   
         
-        /*try {
-			objOutStream.close();
-			objInStream.close();
+        try {
+        	outputStream.close();
+        	inputStream.close();
+        	echoSocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} 	*/
+		} 	
 	}
 	
 	public void setMontant(int total) {

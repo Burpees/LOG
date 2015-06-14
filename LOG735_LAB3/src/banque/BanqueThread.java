@@ -15,7 +15,6 @@ import succursales.SuccursaleInfo;
 
 public class BanqueThread extends Thread{
 	private int port;
-	private ServerSocket serverSocket;
 	private Socket clientSocket;
 	private Banque banque;
 	private int succursaleUniqueID = 0;
@@ -56,13 +55,14 @@ public class BanqueThread extends Thread{
 			e.printStackTrace();
 		} 	
 		 
-		/*try {
-			objOutStream.close();
-			objInStream.close();
+		try {
+			inputStream.close();
+			outputStream.close();
+			clientSocket.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} */
+		} 
 		
     }
 }

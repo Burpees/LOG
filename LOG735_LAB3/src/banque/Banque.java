@@ -20,7 +20,7 @@ public class Banque{
 	
 	public static void main(String[] args) throws IOException {
 		System.out.println("EL BANKO");
-		banque = new Banque(11657);
+		banque = new Banque(2002);
 		banque.openConnection();		
 	}
 	
@@ -34,7 +34,7 @@ public class Banque{
 		ServerSocket serverSocket = null; 
 
 		try { 
-			serverSocket = new ServerSocket(11657); 
+			serverSocket = new ServerSocket(port); 
         } 
 		
 		catch (IOException e) 
